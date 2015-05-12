@@ -57,6 +57,19 @@ The current directory is assumed to be the project's root otherwise."
          (--reduce-from (replace-regexp-in-string (car it) (cdr it) acc nil t)
                         class-name))))
 
+(defun mutant-check-file (&optional file-name)
+  "Run Mutant over a single file.
+If none is given, than `buffer-file-name` is used."
+  (let* ((file-name (or file-name (buffer-file-name)))
+         (class-name (mutant-guess-class-name file-name)))
+    (mutant-run class-name)))
+
+(defun mutant-run (match-exp)
+  "Compile mutant command with given arguments."
+  (let ((default-directory (or (mutant-project-root) default-directory))
+        (full-cmd (mutant-cmd-builder match-exp)))
+    (compile full-cmd)))
+
 (defun mutant-join (&rest args)
   (--> args
        (-remove #'null it)
