@@ -102,4 +102,53 @@ When called without argument, prompt user."
   (ansi-color-apply-on-region compilation-filter-start (point))
   (toggle-read-only))
 
+(defgroup mutant nil
+  "An Emacs interface for Mutant."
+  :group 'tools
+  :group 'convenience)
+
+(defcustom mutant-keymap-prefix (kbd "C-c .")
+  "Mutant keymap prefix."
+  :group 'mutant
+  :type 'string)
+
+(defvar mutant-mode-map
+  (let ((map (make-sparse-keymap)))
+    (let ((prefix-map (make-sparse-keymap)))
+      (define-key prefix-map (kbd "f") 'mutant-check-file)
+      (define-key prefix-map (kbd "c") 'mutant-check-custom)
+
+      (define-key map mutant-keymap-prefix prefix-map))
+    map)
+  "Keymap for mutant-mode.")
+
+(defvar mutant-dired-mode-map
+  (let ((map (make-sparse-keymap)))
+    (let ((prefix-map (make-sparse-keymap)))
+      (define-key prefix-map (kbd "f") 'mutant-check-from-dired)
+      (define-key prefix-map (kbd "c") 'mutant-check-custom)
+
+      (define-key map mutant-keymap-prefix prefix-map))
+    map)
+  "Keymap for mutant-dired-mode.")
+
+(define-minor-mode mutant-mode
+  "Minor mode to interface with Mutant
+
+\\{mutant-mode-map}"
+  :lighter " Mutant"
+  :keymap mutant-mode-map
+  :group 'mutant)
+
+(dolist (hook '(ruby-mode-hook enh-ruby-mode-hook))
+  (add-hook hook 'mutant-mode))
+
+(define-minor-mode mutant-dired-mode
+  "Minor mode for running Mutant from Dired buffers
+
+\\{mutant-dired-mode-map}"
+  :lighter ""
+  :keymap `((,mutant-key-command-prefix . mutant-dired-mode-keymap))
+  :group 'mutant)
+
 (provide 'mutant)
