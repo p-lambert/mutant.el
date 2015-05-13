@@ -9,6 +9,9 @@
 (defvar mutant-use-bundle t
   "Run mutant through bundle exec command.")
 
+(defvar mutant-use-rvm nil
+  "When non-nil, use RVM. Requires rvm.el.")
+
 (defvar mutant-cmd-base "mutant"
   "The command used to run mutant")
 
@@ -97,6 +100,7 @@ When called without argument, prompt user."
   "Execute mutant command under compilation mode with given MATCH-EXP."
   (let ((default-directory (or (mutant-project-root) default-directory))
         (full-cmd (mutant-cmd-builder match-exp)))
+    (if mutant-use-rvm (rvm-activate-corresponding-ruby))
     (compile full-cmd 'mutant-compilation-mode)))
 
 (defun mutant-join (&rest args)
