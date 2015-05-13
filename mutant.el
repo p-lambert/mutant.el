@@ -1,4 +1,6 @@
 (require 'dash)
+(require 'ansi-color)
+(require 'compile)
 
 (defvar mutant-project-root-files
   '(".git" "Gemfile" ".projectile")
@@ -68,11 +70,20 @@ If none is given, than `buffer-file-name` is used."
   "Compile mutant command with given arguments."
   (let ((default-directory (or (mutant-project-root) default-directory))
         (full-cmd (mutant-cmd-builder match-exp)))
-    (compile full-cmd)))
+    (compile full-cmd 'mutant-compilation-mode)))
 
 (defun mutant-join (&rest args)
   (--> args
        (-remove #'null it)
        (mapconcat 'identity it " ")))
+
+(define-compilation-mode mutant-compilation-mode "Mutant Compilation"
+  "Compilation mode for Mutant output."
+  (add-hook 'compilation-filter-hook 'mutant-colorize-compilation-buffer nil t))
+
+(defun mutant-colorize-compilation-buffer ()
+  (toggle-read-only)
+  (ansi-color-apply-on-region compilation-filter-start (point))
+  (toggle-read-only))
 
 (provide 'mutant)
