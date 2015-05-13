@@ -52,7 +52,7 @@ The current directory is assumed to be the project's root otherwise."
       (error "You're not into a project")))
 
 (defun mutant-guess-class-name (file-name)
-  "Guess the name of the class based on file name."
+  "Guess the name of a class based on FILE-NAME."
   (let* ((relative-name (file-relative-name file-name (mutant-project-root)))
          (class-name (capitalize relative-name)))
     (->> mutant-regexp-alist
@@ -83,7 +83,7 @@ When called without argument, prompt user."
     (mutant-run match-exp)))
 
 (defun mutant-run (match-exp)
-  "Compile mutant command with given arguments."
+  "Execute mutant command under compilation mode with given MATCH-EXP."
   (let ((default-directory (or (mutant-project-root) default-directory))
         (full-cmd (mutant-cmd-builder match-exp)))
     (compile full-cmd 'mutant-compilation-mode)))
