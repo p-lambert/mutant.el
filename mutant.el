@@ -75,6 +75,13 @@ If there are no files marked, use that under cursor."
        (mapconcat 'mutant-guess-class-name it " ")
        (mutant-run it)))
 
+(defun mutant-check-custom (&optional match-exp)
+  "Run Mutant over MATCH-EXP.
+When called without argument, prompt user."
+  (interactive)
+  (let ((match-exp (or match-exp (read-input "Match expression: "))))
+    (mutant-run match-exp)))
+
 (defun mutant-run (match-exp)
   "Compile mutant command with given arguments."
   (let ((default-directory (or (mutant-project-root) default-directory))
