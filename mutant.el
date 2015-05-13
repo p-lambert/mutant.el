@@ -29,6 +29,7 @@
   (-> (mutant-cmd-bundle)
        (mutant-join mutant-cmd-base)
        (mutant-join (mutant-cmd-rails-env))
+       (mutant-join (mutant-cmd-includes))
        (mutant-join mutant-cmd-strategy)
        (mutant-join match-exp)))
 
@@ -41,6 +42,16 @@
   (when (file-exists-p
          (expand-file-name "config/environment.rb" (mutant-project-root)))
     "--require ./config/environment"))
+
+(defun mutant-cmd-includes ()
+  "Setup load path and require necessary files."
+  (let ((default-directory (or (mutant-project-root) default-directory)))
+    (let ((lib-files (file-expand-wildcards "lib/*\.rb")))
+      (when (and lib-files (not (mutant-cmd-rails-env)))
+      (--> lib-files
+           (mapconcat 'identity it " ")
+           (replace-regexp-in-string "lib\\/\\(.+?\\).rb" "\\1" it t)
+           (mutant-join "--include lib --require" it))))))
 
 (defun mutant-project-root ()
   "Retrieve the root directory of a project if available.
