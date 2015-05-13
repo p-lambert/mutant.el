@@ -57,3 +57,22 @@ You can also launch `Mutant` from Dired buffers. To do that, add this:
 
 By doing so, you may mark files and then press <kbd>C-c . f</kbd> which will
 call `mutant-check-from-dired`.
+
+Configuration:
+--------------
+
+If you use RVM, you must set the following variable:
+
+```el
+(setq mutant-use-rvm t)
+```
+
+Notice that this will depend on having [rvm.el](https://github.com/senny/rvm.el)
+installed.
+
+If you want to disable `bundle exec` prefix used to execute the `mutant`
+command, you may do the following:
+
+```el
+(setq mutant-use-bundle nil)
+```
