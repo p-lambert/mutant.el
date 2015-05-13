@@ -67,6 +67,14 @@ If none is given, than `buffer-file-name` is used."
          (class-name (mutant-guess-class-name file-name)))
     (mutant-run class-name)))
 
+(defun mutant-check-from-dired ()
+  "Run Mutant over all marked files in dired.
+If there are no files marked, use that under cursor."
+  (interactive)
+  (--> (dired-get-marked-files)
+       (mapconcat 'mutant-guess-class-name it " ")
+       (mutant-run it)))
+
 (defun mutant-run (match-exp)
   "Compile mutant command with given arguments."
   (let ((default-directory (or (mutant-project-root) default-directory))
