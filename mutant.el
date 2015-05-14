@@ -15,8 +15,7 @@
 (defvar mutant-cmd-base "mutant"
   "The command used to run mutant")
 
-(defvar mutant-cmd-strategy
-  "--use rspec"
+(defvar mutant-strategy "rspec"
   "The strategy to be used in mutation.")
 
 (defvar mutant-regexp-alist
@@ -32,13 +31,17 @@
   (-> (mutant-cmd-bundle)
        (mutant-join mutant-cmd-base)
        (mutant-join (mutant-cmd-rails-env))
-       (mutant-join (mutant-cmd-includes))
-       (mutant-join mutant-cmd-strategy)
+       (mutant-join (mutant-cmd-env))
+       (mutant-join (mutant-cmd-strategy))
        (mutant-join match-exp)))
 
 (defun mutant-cmd-bundle ()
   "Returns 'bundle exec' if `mutant-use-bundle` is non-nil.'"
   (when mutant-use-bundle "bundle exec"))
+
+(defun mutant-cmd-strategy ()
+  "Returns the strategy (--use option) used by mutant."
+  (mutant-join "--use" mutant-strategy))
 
 (defun mutant-cmd-rails-env ()
   "Boot Rails environment, if available."
@@ -46,7 +49,7 @@
          (expand-file-name "config/environment.rb" (mutant-project-root)))
     "--require ./config/environment"))
 
-(defun mutant-cmd-includes ()
+(defun mutant-cmd-env ()
   "Setup load path and require necessary files."
   (let ((default-directory (or (mutant-project-root) default-directory)))
     (let ((lib-files (file-expand-wildcards "lib/*\.rb")))
