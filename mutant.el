@@ -26,40 +26,40 @@
     ("_" . ""))
   "A list of regular expressions to be applied upon a file name.")
 
-(defun mutant-cmd-builder (&optional match-exp)
+(defun mutant--cmd-builder (&optional match-exp)
   "Build each part of the mutant command."
-  (-> (mutant-cmd-bundle)
-       (mutant-join mutant-cmd-base)
-       (mutant-join (mutant-cmd-rails-env))
-       (mutant-join (mutant-cmd-env))
-       (mutant-join (mutant-cmd-strategy))
-       (mutant-join match-exp)))
+  (-> (mutant--cmd-bundle)
+       (mutant--join mutant-cmd-base)
+       (mutant--join (mutant--cmd-rails-env))
+       (mutant--join (mutant--cmd-env))
+       (mutant--join (mutant--cmd-strategy))
+       (mutant--join match-exp)))
 
-(defun mutant-cmd-bundle ()
+(defun mutant--cmd-bundle ()
   "Returns 'bundle exec' if `mutant-use-bundle` is non-nil.'"
   (when mutant-use-bundle "bundle exec"))
 
-(defun mutant-cmd-strategy ()
+(defun mutant--cmd-strategy ()
   "Returns the strategy (--use option) used by mutant."
-  (mutant-join "--use" mutant-strategy))
+  (mutant--join "--use" mutant-strategy))
 
-(defun mutant-cmd-rails-env ()
+(defun mutant--cmd-rails-env ()
   "Boot Rails environment, if available."
   (when (file-exists-p
-         (expand-file-name "config/environment.rb" (mutant-project-root)))
+         (expand-file-name "config/environment.rb" (mutant--project-root)))
     "--require ./config/environment"))
 
-(defun mutant-cmd-env ()
+(defun mutant--cmd-env ()
   "Setup load path and require necessary files."
-  (let ((default-directory (or (mutant-project-root) default-directory)))
+  (let ((default-directory (or (mutant--project-root) default-directory)))
     (let ((lib-files (file-expand-wildcards "lib/*\.rb")))
-      (when (and lib-files (not (mutant-cmd-rails-env)))
+      (when (and lib-files (not (mutant--cmd-rails-env)))
       (--> lib-files
            (mapconcat 'identity it " ")
            (replace-regexp-in-string "lib\\/\\(.+?\\).rb" "\\1" it t)
-           (mutant-join "--include lib --require" it))))))
+           (mutant--join "--include lib --require" it))))))
 
-(defun mutant-project-root ()
+(defun mutant--project-root ()
   "Retrieve the root directory of a project if available.
 The current directory is assumed to be the project's root otherwise."
   (or (->> mutant-project-root-files
@@ -68,9 +68,9 @@ The current directory is assumed to be the project's root otherwise."
         (car))
       (error "You're not into a project")))
 
-(defun mutant-guess-class-name (file-name)
+(defun mutant--guess-class-name (file-name)
   "Guess the name of a class based on FILE-NAME."
-  (let* ((relative-name (file-relative-name file-name (mutant-project-root)))
+  (let* ((relative-name (file-relative-name file-name (mutant--project-root)))
          (class-name (capitalize relative-name)))
     (->> mutant-regexp-alist
          (--reduce-from (replace-regexp-in-string (car it) (cdr it) acc nil t)
@@ -81,7 +81,7 @@ The current directory is assumed to be the project's root otherwise."
 If none is given, than `buffer-file-name` is used."
   (interactive)
   (let* ((file-name (or file-name (buffer-file-name)))
-         (class-name (mutant-guess-class-name file-name)))
+         (class-name (mutant--guess-class-name file-name)))
     (mutant-run class-name)))
 
 (defun mutant-check-from-dired ()
@@ -89,7 +89,7 @@ If none is given, than `buffer-file-name` is used."
 If there are no files marked, use that under cursor."
   (interactive)
   (--> (dired-get-marked-files)
-       (mapconcat 'mutant-guess-class-name it " ")
+       (mapconcat 'mutant--guess-class-name it " ")
        (mutant-run it)))
 
 (defun mutant-check-custom (&optional match-exp)
@@ -101,21 +101,21 @@ When called without argument, prompt user."
 
 (defun mutant-run (match-exp)
   "Execute mutant command under compilation mode with given MATCH-EXP."
-  (let ((default-directory (or (mutant-project-root) default-directory))
-        (full-cmd (mutant-cmd-builder match-exp)))
+  (let ((default-directory (or (mutant--project-root) default-directory))
+        (full-cmd (mutant--cmd-builder match-exp)))
     (if mutant-use-rvm (rvm-activate-corresponding-ruby))
     (compile full-cmd 'mutant-compilation-mode)))
 
-(defun mutant-join (&rest args)
+(defun mutant--join (&rest args)
   (--> args
        (-remove #'null it)
        (mapconcat 'identity it " ")))
 
 (define-compilation-mode mutant-compilation-mode "Mutant Compilation"
   "Compilation mode for Mutant output."
-  (add-hook 'compilation-filter-hook 'mutant-colorize-compilation-buffer nil t))
+  (add-hook 'compilation-filter-hook 'mutant--colorize-compilation-buffer nil t))
 
-(defun mutant-colorize-compilation-buffer ()
+(defun mutant--colorize-compilation-buffer ()
   (toggle-read-only)
   (ansi-color-apply-on-region compilation-filter-start (point))
   (toggle-read-only))
