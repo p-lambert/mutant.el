@@ -2,29 +2,46 @@
 (require 'ansi-color)
 (require 'compile)
 
-(defvar mutant-project-root-files
+(defgroup mutant nil
+  "An Emacs interface for Mutant."
+  :group 'tools
+  :group 'convenience)
+
+(defcustom mutant-project-root-files
   '(".git" "Gemfile" ".projectile")
-  "A list of files that might indicate the root directory of a project.")
+  "A list of files that might indicate the root directory of a project."
+  :group 'mutant
+  :type '(repeat string))
 
-(defvar mutant-use-bundle t
-  "Run mutant through bundle exec command.")
+(defcustom mutant-use-bundle t
+  "Run mutant through bundle exec command."
+  :group 'mutant
+  :type 'boolean)
 
-(defvar mutant-use-rvm nil
-  "When non-nil, use RVM. Requires rvm.el.")
+(defcustom mutant-use-rvm nil
+  "When non-nil, use RVM. Requires rvm.el."
+  :group 'mutant
+  :type 'boolean)
 
-(defvar mutant-cmd-base "mutant"
-  "The command used to run mutant")
+(defcustom mutant-cmd-base "mutant"
+  "The command used to run mutant"
+  :group 'mutant
+  :type 'string)
 
-(defvar mutant-strategy "rspec"
-  "The strategy to be used in mutation.")
+(defcustom mutant-strategy "rspec"
+  "The strategy to be used in mutation."
+  :group 'mutant
+  :type 'string)
 
-(defvar mutant-regexp-alist
+(defcustom mutant-regexp-alist
   '(("\\(_spec\\)?\\.rb" . "")
     ("^\\(app\\|spec\\|test\\)\\/.+?\\/" . "")
     ("^lib\\/" . "")
     ("/" . "::")
     ("_" . ""))
-  "A list of regular expressions to be applied upon a file name.")
+  "A list of regular expressions to be applied upon a file name."
+  :group 'mutant
+  :type '(alist :key-type string :value-type string))
 
 (defun mutant--cmd-builder (&optional match-exp)
   "Build each part of the mutant command."
@@ -119,11 +136,6 @@ When called without argument, prompt user."
   (toggle-read-only)
   (ansi-color-apply-on-region compilation-filter-start (point))
   (toggle-read-only))
-
-(defgroup mutant nil
-  "An Emacs interface for Mutant."
-  :group 'tools
-  :group 'convenience)
 
 (defcustom mutant-keymap-prefix (kbd "C-c .")
   "Mutant keymap prefix."
