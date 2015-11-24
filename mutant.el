@@ -93,6 +93,27 @@ The current directory is assumed to be the project's root otherwise."
          (--reduce-from (replace-regexp-in-string (car it) (cdr it) acc nil t)
                         class-name))))
 
+(defun mutant--run (match-exp)
+  "Execute mutant command under compilation mode with given MATCH-EXP."
+  (let ((default-directory (or (mutant--project-root) default-directory))
+        (full-cmd (mutant--cmd-builder match-exp)))
+    (if mutant-use-rvm (rvm-activate-corresponding-ruby))
+    (compile full-cmd 'mutant-compilation-mode)))
+
+(defun mutant--join (&rest args)
+  (--> args
+       (-remove #'null it)
+       (mapconcat 'identity it " ")))
+
+(defun mutant--colorize-compilation-buffer ()
+  (toggle-read-only)
+  (ansi-color-apply-on-region compilation-filter-start (point))
+  (toggle-read-only))
+
+(define-compilation-mode mutant-compilation-mode "Mutant Compilation"
+  "Compilation mode for Mutant output."
+  (add-hook 'compilation-filter-hook 'mutant--colorize-compilation-buffer nil t))
+
 (defun mutant-check-file (&optional file-name)
   "Run Mutant over a single file.
 If none is given, than `buffer-file-name` is used."
@@ -115,27 +136,6 @@ When called without argument, prompt user."
   (interactive)
   (let ((match-exp (or match-exp (read-input "Match expression: "))))
     (mutant--run match-exp)))
-
-(defun mutant--run (match-exp)
-  "Execute mutant command under compilation mode with given MATCH-EXP."
-  (let ((default-directory (or (mutant--project-root) default-directory))
-        (full-cmd (mutant--cmd-builder match-exp)))
-    (if mutant-use-rvm (rvm-activate-corresponding-ruby))
-    (compile full-cmd 'mutant-compilation-mode)))
-
-(defun mutant--join (&rest args)
-  (--> args
-       (-remove #'null it)
-       (mapconcat 'identity it " ")))
-
-(define-compilation-mode mutant-compilation-mode "Mutant Compilation"
-  "Compilation mode for Mutant output."
-  (add-hook 'compilation-filter-hook 'mutant--colorize-compilation-buffer nil t))
-
-(defun mutant--colorize-compilation-buffer ()
-  (toggle-read-only)
-  (ansi-color-apply-on-region compilation-filter-start (point))
-  (toggle-read-only))
 
 (defcustom mutant-keymap-prefix (kbd "C-c .")
   "Mutant keymap prefix."
