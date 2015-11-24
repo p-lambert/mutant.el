@@ -99,7 +99,7 @@ If none is given, than `buffer-file-name` is used."
   (interactive)
   (let* ((file-name (or file-name (buffer-file-name)))
          (class-name (mutant--guess-class-name file-name)))
-    (mutant-run class-name)))
+    (mutant--run class-name)))
 
 (defun mutant-check-from-dired ()
   "Run Mutant over all marked files in dired.
@@ -107,16 +107,16 @@ If there are no files marked, use that under cursor."
   (interactive)
   (--> (dired-get-marked-files)
        (mapconcat 'mutant--guess-class-name it " ")
-       (mutant-run it)))
+       (mutant--run it)))
 
 (defun mutant-check-custom (&optional match-exp)
   "Run Mutant over MATCH-EXP.
 When called without argument, prompt user."
   (interactive)
   (let ((match-exp (or match-exp (read-input "Match expression: "))))
-    (mutant-run match-exp)))
+    (mutant--run match-exp)))
 
-(defun mutant-run (match-exp)
+(defun mutant--run (match-exp)
   "Execute mutant command under compilation mode with given MATCH-EXP."
   (let ((default-directory (or (mutant--project-root) default-directory))
         (full-cmd (mutant--cmd-builder match-exp)))
