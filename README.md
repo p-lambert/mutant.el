@@ -61,18 +61,17 @@ call `mutant-check-from-dired`.
 Configuration:
 --------------
 
-If you use RVM, you must set the following variable:
+If you use RVM, you might have to add this hook:
 
 ```el
-(setq mutant-use-rvm t)
+(add-hook 'mutant-precompile-hook
+          (lambda () (rvm-activate-corresponding-ruby)))
 ```
 
-Notice that this will depend on having [rvm.el](https://github.com/senny/rvm.el)
-installed.
+Notice that this obviously requires [rvm.el](https://github.com/senny/rvm.el).
 
-If you want to disable `bundle exec` prefix used to execute the `mutant`
-command, you may do the following:
+In order to execute the `mutant` command with a `bundle exec` prefix, you may do the following:
 
 ```el
-(setq mutant-use-bundle nil)
+(setq mutant-cmd-base "bundle exec mutant")
 ```
