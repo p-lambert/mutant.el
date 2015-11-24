@@ -13,11 +13,6 @@
   :group 'mutant
   :type '(repeat string))
 
-(defcustom mutant-use-bundle t
-  "Run mutant through bundle exec command."
-  :group 'mutant
-  :type 'boolean)
-
 (defcustom mutant-use-rvm nil
   "When non-nil, use RVM. Requires rvm.el."
   :group 'mutant
@@ -45,12 +40,11 @@
 
 (defun mutant--cmd-builder (&optional match-exp)
   "Build each part of the mutant command."
-  (-> (mutant--cmd-bundle)
-       (mutant--join mutant-cmd-base)
-       (mutant--join (mutant--cmd-rails-env))
-       (mutant--join (mutant--cmd-env))
-       (mutant--join (mutant--cmd-strategy))
-       (mutant--join match-exp)))
+  (-> mutant-cmd-base
+      (mutant--join (mutant--cmd-rails-env))
+      (mutant--join (mutant--cmd-env))
+      (mutant--join (mutant--cmd-strategy))
+      (mutant--join match-exp)))
 
 (defun mutant--cmd-bundle ()
   "Returns 'bundle exec' if `mutant-use-bundle` is non-nil.'"
