@@ -108,6 +108,7 @@ The current directory is assumed to be the project's root otherwise."
   "Compilation mode for Mutant output."
   (add-hook 'compilation-filter-hook 'mutant--colorize-compilation-buffer nil t))
 
+;;;###autoload
 (defun mutant-check-file (&optional file-name)
   "Run Mutant over a single file.
 If none is given, than `buffer-file-name` is used."
@@ -116,6 +117,7 @@ If none is given, than `buffer-file-name` is used."
          (class-name (mutant--guess-class-name file-name)))
     (mutant--run class-name)))
 
+;;;###autoload
 (defun mutant-check-from-dired ()
   "Run Mutant over all marked files in dired.
 If there are no files marked, use that under cursor."
@@ -124,6 +126,7 @@ If there are no files marked, use that under cursor."
        (mapconcat 'mutant--guess-class-name it " ")
        (mutant--run it)))
 
+;;;###autoload
 (defun mutant-check-custom (&optional match-exp)
   "Run Mutant over MATCH-EXP.
 When called without argument, prompt user."
@@ -156,6 +159,7 @@ When called without argument, prompt user."
     map)
   "Keymap for mutant-dired-mode.")
 
+;;;###autoload
 (define-minor-mode mutant-mode
   "Minor mode to interface with Mutant
 
@@ -164,6 +168,7 @@ When called without argument, prompt user."
   :keymap mutant-mode-map
   :group 'mutant)
 
+;;;###autoload
 (dolist (hook '(ruby-mode-hook enh-ruby-mode-hook))
   (add-hook hook 'mutant-mode))
 
