@@ -13,11 +13,6 @@
   :group 'mutant
   :type '(repeat string))
 
-(defcustom mutant-use-rvm nil
-  "When non-nil, use RVM. Requires rvm.el."
-  :group 'mutant
-  :type 'boolean)
-
 (defcustom mutant-cmd-base "mutant"
   "The command used to run mutant"
   :group 'mutant
@@ -97,7 +92,6 @@ The current directory is assumed to be the project's root otherwise."
   (run-hooks 'mutant-precompile-hook)
   (let ((default-directory (or (mutant--project-root) default-directory))
         (full-cmd (mutant--cmd-builder match-exp)))
-    (if mutant-use-rvm (rvm-activate-corresponding-ruby))
     (compile full-cmd 'mutant-compilation-mode)))
 
 (defun mutant--join (&rest args)
