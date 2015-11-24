@@ -38,6 +38,11 @@
   :group 'mutant
   :type '(alist :key-type string :value-type string))
 
+(defcustom mutant-precompile-hook nil
+  "Hooks executed before running the mutant command."
+  :group 'mutant
+  :type 'hook)
+
 (defun mutant--cmd-builder (&optional match-exp)
   "Build each part of the mutant command."
   (-> mutant-cmd-base
@@ -89,6 +94,7 @@ The current directory is assumed to be the project's root otherwise."
 
 (defun mutant--run (match-exp)
   "Execute mutant command under compilation mode with given MATCH-EXP."
+  (run-hooks 'mutant-precompile-hook)
   (let ((default-directory (or (mutant--project-root) default-directory))
         (full-cmd (mutant--cmd-builder match-exp)))
     (if mutant-use-rvm (rvm-activate-corresponding-ruby))
