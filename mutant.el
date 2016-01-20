@@ -1,3 +1,90 @@
+;;; mutant.el --- An Emacs interface for the Mutant testing tool
+
+;; Copyright (C) 2016 Pedro Lambert <pedrolambert at google mail>
+
+;; Author: Pedro Lambert
+;; URL: http://github.com/p-lambert/mutant.el
+;; Version: 1.0
+;; Keywords: mutant, testing
+;; Package-Requires: ((emacs "24.4") (dash "2.1.0"))
+
+;; This file is NOT part of GNU Emacs.
+;;
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; See <http://www.gnu.org/licenses/> for a copy of the GNU General
+;; Public License.
+
+;;; Commentary:
+;;
+;; This package provides an interface for dealing with the
+;; [Mutant](https://github.com/mbj/mutant) testing tool, enabling
+;; one to easily launch it from a `.rb` file or even from a `dired` buffer.
+;; The generated output is nicely formatted and provides direct links
+;; to the errors reported by the mutations. I've tried
+;; to mimic the `rspec-mode` overall experience as much as possible.
+
+;;; Installation:
+;;
+;; This package can be installed via `MELPA`, or manually by downloading
+;; `mutant.el` and adding it to your init file, as it follows:
+;;
+;; ```elisp
+;; (add-to-list 'load-path "/path/to/mutant")
+;; (require 'mutant)
+;; ```
+
+;;; Usage:
+;;
+;; By default, the following keybindings will be available:
+;;
+;; * <kbd>C-c . f</kbd> runs `mutant-check-file`
+;; * <kbd>C-c . c</kbd> runs `mutant-check-custom`
+;;
+;; For `dired` mode integration, just add the following to your
+;; configuration file:
+;;
+;; ```elisp
+;; (add-hook 'dired-mode-hook 'mutant-dired-mode)
+;; ```
+;;
+;; By doing so, you'll be able to mark files and then press <kbd>C-c . f</kbd>
+;; for running `mutant` on them.
+;;
+;; See the [Function Documentation](#function-documentation) for more details.
+
+;;; Customization:
+;;
+;; If you're a `rvm` user, you might have to add the following to your
+;; configuration file:
+;;
+;; ```elisp
+;; (add-hook 'mutant-precompile-hook
+;;           (lambda () (rvm-activate-corresponding-ruby)))
+;; ```
+;; Notice that this obviously requires `rvm.el` to be installed.
+;;
+;; In order to execute the `mutant` command with a `bundle exec` prefix,
+;; simply add the following to your configuration file:
+;;
+;; ```elisp
+;; (setq mutant-cmd-base "bundle exec mutant")
+;; ```
+
+;;
+;;; Changelog:
+;;
+;; 1.0 - First release. <br/>
+
+;;; Code
 (require 'dash)
 (require 'ansi-color)
 (require 'compile)
@@ -181,3 +268,4 @@ When called without argument, prompt user."
   :group 'mutant)
 
 (provide 'mutant)
+;;; mutant.el ends here
