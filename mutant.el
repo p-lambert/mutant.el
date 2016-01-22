@@ -198,7 +198,7 @@ The current directory is assumed to be the project's root otherwise."
 ;;;###autoload
 (defun mutant-check-file (&optional file-name)
   "Run Mutant over a single file.
-If none is given, than `buffer-file-name` is used."
+If none is given, then `buffer-file-name` is used."
   (interactive)
   (let* ((file-name (or file-name (buffer-file-name)))
          (class-name (mutant--guess-class-name file-name)))
