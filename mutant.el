@@ -187,9 +187,9 @@ The current directory is assumed to be the project's root otherwise."
        (mapconcat 'identity it " ")))
 
 (defun mutant--colorize-compilation-buffer ()
-  (toggle-read-only)
+  (read-only-mode -1)
   (ansi-color-apply-on-region compilation-filter-start (point))
-  (toggle-read-only))
+  (read-only-mode +1))
 
 (define-compilation-mode mutant-compilation-mode "Mutant Compilation"
   "Compilation mode for Mutant output."
@@ -218,7 +218,7 @@ If there are no files marked, use that under cursor."
   "Run Mutant over MATCH-EXP.
 When called without argument, prompt user."
   (interactive)
-  (let ((match-exp (or match-exp (read-input "Match expression: "))))
+  (let ((match-exp (or match-exp (read-string "Match expression: "))))
     (mutant--run match-exp)))
 
 (defcustom mutant-keymap-prefix (kbd "C-c .")
