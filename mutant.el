@@ -1,4 +1,4 @@
-;;; mutant.el --- An Emacs interface for the Mutant testing tool
+;;; mutant.el --- An interface for the Mutant testing tool
 
 ;; Copyright (C) 2016 Pedro Lambert <pedrolambert at google mail>
 
@@ -90,7 +90,7 @@
 (require 'compile)
 
 (defgroup mutant nil
-  "An Emacs interface for Mutant."
+  "An interface for Mutant."
   :group 'tools
   :group 'convenience)
 
