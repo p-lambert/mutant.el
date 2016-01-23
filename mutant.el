@@ -41,6 +41,13 @@
 ;; (add-to-list 'load-path "/path/to/mutant")
 ;; (require 'mutant)
 ;; ```
+;;
+;; For having `mutant-mode` enabled automatically, I suggest you
+;; to do the following:
+;;
+;; ```elisp
+;; (add-hook 'ruby-mode-hook 'mutant-mode)
+;; ```
 
 ;;; Usage:
 ;;
@@ -254,10 +261,6 @@ When called without argument, prompt user."
   :lighter " Mutant"
   :keymap mutant-mode-map
   :group 'mutant)
-
-;;;###autoload
-(dolist (hook '(ruby-mode-hook enh-ruby-mode-hook))
-  (add-hook hook 'mutant-mode))
 
 (define-minor-mode mutant-dired-mode
   "Minor mode for running Mutant from Dired buffers
