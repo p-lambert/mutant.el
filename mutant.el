@@ -140,10 +140,6 @@
       (mutant--join (mutant--cmd-strategy))
       (mutant--join match-exp)))
 
-(defun mutant--cmd-bundle ()
-  "Returns 'bundle exec' if `mutant-use-bundle` is non-nil.'"
-  (when mutant-use-bundle "bundle exec"))
-
 (defun mutant--cmd-strategy ()
   "Returns the strategy (--use option) used by mutant."
   (mutant--join "--use" mutant-strategy))
