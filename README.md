@@ -1,5 +1,5 @@
 ## mutant.el
-*An Emacs interface for the Mutant testing tool*
+*An interface for the Mutant testing tool*
 
 ---
 
@@ -19,6 +19,13 @@ This package can be installed via `MELPA`, or manually by downloading
 ```elisp
 (add-to-list 'load-path "/path/to/mutant")
 (require 'mutant)
+```
+
+For having `mutant-mode` enabled automatically, I suggest you
+to do the following:
+
+```elisp
+(add-hook 'ruby-mode-hook 'mutant-mode)
 ```
 
 ### Usage
