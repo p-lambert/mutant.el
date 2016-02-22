@@ -2,6 +2,7 @@
 *An interface for the Mutant testing tool*
 
 ---
+[![MELPA](http://melpa.org/packages/mutant-badge.svg)](http://melpa.org/#/mutant)
 
 This package provides an interface for dealing with the
 [Mutant](https://github.com/mbj/mutant) testing tool, enabling
